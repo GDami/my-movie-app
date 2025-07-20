@@ -1,7 +1,7 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	font-family: "Outfit", sans-serif;
 }
 
-body {
-  
+.chewy {
+	font-family: "Chewy", system-ui;
 }
