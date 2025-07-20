@@ -5,3 +5,7 @@
 .chewy {
 	font-family: "Chewy", system-ui;
 }
+
+body {
+	--color-accent: #01b4e4;
+}

@@ -1,12 +1,17 @@
-import Header from "../../components/Header/Header";
+import { useSearchParams } from "react-router";
+import Content from "../layout/Content/Content";
 
 export default function SearchResults() {
+    const [ searchParams ] = useSearchParams()
+    console.log(searchParams.has("query"))
+
+    const query = searchParams.get("query")
+
     return (
-        <div className="container max-w-full">
-            <Header />
-            <div className="content">
-                
+        <Content>
+            <div className="search-results flex flex-col">
+                <span className="search-title">{ query ? "Found 123 results for " + query : "No results found" }</span>
             </div>
-        </div>
+        </Content>
     )
 }
