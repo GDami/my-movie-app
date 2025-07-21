@@ -16,14 +16,13 @@ const mockList = [
 
 export default function SearchResults() {
     const [ searchParams ] = useSearchParams()
-    console.log(searchParams.has("query"))
 
     const query = searchParams.get("query")
 
     return (
         <Content>
             <div className="search-results flex flex-col gap-4">
-                <span className="search-title">{ query ? "Found 123 results for " + query : "No results found" }</span>
+                <span className="search-title">{'Search results for "' + query + '"'}</span>
                 <div className="results-display flex flex-col gap-8 border">
                     <ul className="category-list border border-black h-10">
                         Categories

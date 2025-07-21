@@ -5,7 +5,7 @@ type SearchResultProps = {
 
 export default function SearchResult(props: SearchResultProps) {
     return (
-        <div className="result">
+        <div className="result border border-black p-4">
             {props.title}
             {props.description}
         </div>
