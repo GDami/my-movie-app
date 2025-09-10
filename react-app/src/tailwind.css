@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@theme {
+    --color-darkblue: #0B1C2C;
+    --color-mouvise: #F5C518;
+    --radius-20: 1.25rem;
+    --radius-big: 2.5rem;
+}

@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
 :root {
-	font-family: "Outfit", sans-serif;
+    font-family: "Nunito Sans", sans-serif;
 }
 
 .chewy {
@@ -7,5 +9,11 @@
 }
 
 body {
-	--color-accent: #90cea1;
+	--color-accent: #F5C518;
+	--color-accent-25: color-mix(in srgb, var(--color-accent), transparent 70%)
+}
+
+h1 {
+    font-family: "Chewy", system-ui;
+    font-size: 1.5rem;
 }

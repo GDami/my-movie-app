@@ -7,13 +7,8 @@ import APICaller from './singletons/APICaller'
 
 
 function App() {
-	useEffect(() => {
-		const apiCaller = APICaller.getInstance()
-		apiCaller.callAPI()
-	})
-
 	return (
-    	<div className='app'>
+    	<div className='app bg-darkblue'>
 		    <Routes>
         		<Route path="/search" element={<SearchResults />} />
           		<Route path="/" element={<Home />} />
