@@ -8,7 +8,7 @@ export default function Content(props: PropsWithChildren) {
             <div className="max-w-7xl mx-auto">
                 <Header />
                 <div className="content-container w-full flex justify-center px-10">
-                    <div className="content w-full rounded-t-20 bg-white px-8 pb-4 flex flex-col gap-8">
+                    <div className="content w-full rounded-t-20 bg-gray-50 px-8 pb-4 flex flex-col gap-8">
                         <Breadcrumbs />
                         {props.children}
                     </div>

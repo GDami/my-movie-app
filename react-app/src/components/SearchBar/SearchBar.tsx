@@ -4,7 +4,7 @@ import { useNavigate } from "react-router"
 export default function SearchBar() {
 const navigate = useNavigate()
 
-    const onSubmit = (e) => {
+    const onSubmit = (e: any) => {
         e.preventDefault()
         console.log()
         navigate("/search?query=" + e.target.firstChild.value)
