@@ -111,7 +111,7 @@ export default function SearchResults() {
                         {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
                     </ul>
                     <ul className="results-list grid grid-cols-2 gap-4">
-                        {results[categories[currentTab]].items.map((result, index) => <SearchResult key={index} title={result.title} description={result.description} imageUrl={result.imageUrl ? result.imageUrl : null} />)}
+                        {results[categories[currentTab]].items.map((result, index) => <SearchResult key={index} title={result.title} description={result.description} imageUrl={result.imageUrl} />)}
                     </ul>
                 </div>
             </div>
