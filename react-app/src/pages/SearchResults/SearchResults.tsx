@@ -1,8 +1,9 @@
-import { useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import Content from "../layout/Content/Content";
 import SearchResult from "./SearchResult";
 import APICaller, { type Category } from "../../singletons/APICaller";
 import { useEffect, useState } from "react";
+import type { BreadcrumbEntry } from "../../components/Breadcrumbs/Breadcrumbs";
 
 const categories: Category[] = ["movies", "shows", "people"]
 
@@ -66,12 +67,17 @@ export default function SearchResults() {
     const [ currentTab, setCurrentTab ] = useState(0)
     
     const [ searchParams ] = useSearchParams()
+    const location = useLocation()
 
     const onClickCategory = (index:number) => {
         setCurrentTab(index)
     }
 
     const query = searchParams.get("query")
+
+    const title = `Search results for "${query}"`
+    const link = `${location.pathname}?query=${query}`
+    const crumbs: BreadcrumbEntry[] = [{ link, display: title }]
 
     async function fetchAndSet() {
         console.log("querying")
@@ -103,9 +109,9 @@ export default function SearchResults() {
     console.log("render")
 
     return (
-        <Content>
-            <div className="search-results flex flex-col gap-9">
-                <h1 className="search-title">{'Search results for "' + query + '"'}</h1>
+        <Content crumbs={crumbs}>
+            <div className="search-results flex flex-col gap-6">
+                <h1 className="search-title">{title}</h1>
                 <div className="results-display flex flex-col gap-8">
                     <ul className="flex inset-shadow-[0_-0.25px_gray]">
                         {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
