@@ -1,9 +1,10 @@
 import { useLocation, useSearchParams } from "react-router";
 import Content from "../layout/Content/Content";
-import SearchResult from "./SearchResult";
+import MovieResult from "./MovieResult";
 import APICaller, { type Category } from "../../singletons/APICaller";
 import { useEffect, useState } from "react";
 import type { BreadcrumbEntry } from "../../components/Breadcrumbs/Breadcrumbs";
+import PersonResult from "./PersonResult";
 
 const categories: Category[] = ["movies", "shows", "people"]
 
@@ -15,12 +16,21 @@ type MovieItem = {
     imageUrl: string
 }
 
-type Entries = { nb: number, items: MovieItem[]}
+type PersonItem = {
+    name: string,
+    knownForDepartment: string,
+    knownFor: string[],
+    id: number,
+    imageUrl: string
+}
+
+type MovieEntries = { nb: number, items: MovieItem[]}
+type PersonEntries = { nb: number, items: PersonItem[]}
 
 type ResultList = {
-    movies: Entries,
-    shows: Entries,
-    people: Entries,
+    movies: MovieEntries,
+    shows: MovieEntries,
+    people: PersonEntries,
 }
 
 const emptyList:ResultList = { movies: { nb: 0, items: [] }, shows: { nb: 0, items: [] }, people: { nb: 0, items: [] } }
@@ -51,10 +61,24 @@ const createShowItem = (responseItem: any) => {
     return item
 }
 
+const createPersonItem = (responseItem: any) => {
+    const url = selectUrl(responseItem)
+    const item:PersonItem = {
+        name: responseItem.name,
+        knownForDepartment: responseItem.known_for_department,
+        knownFor: responseItem.known_for.map((value: any) => value.title),
+        id: responseItem.id,
+        imageUrl: url
+    }
+
+    return item
+}
+
 const selectUrl = (responseItem: any) => {
     let url = ""
     if (responseItem.hasOwnProperty("poster")) url = responseItem.poster
     else if (responseItem.hasOwnProperty("backdrop")) url = responseItem.backdrop
+    else if (responseItem.hasOwnProperty("profile")) url = responseItem.profile
     return url
 }
 
@@ -95,6 +119,9 @@ export default function SearchResults() {
                     case "shows":
                         newData[category].items.push(createShowItem(result))
                         break
+                    case "people":
+                        newData[category].items.push(createPersonItem(result))
+                        break
                 }
             }
         }
@@ -116,9 +143,14 @@ export default function SearchResults() {
                     <ul className="flex inset-shadow-[0_-0.25px_gray]">
                         {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
                     </ul>
-                    <ul className="results-list grid grid-cols-2 gap-4 px-4">
-                        {results[categories[currentTab]].items.map((result, index) => <SearchResult key={index} title={result.title} description={result.description} imageUrl={result.imageUrl} />)}
-                    </ul>
+                    <div className="results-list grid grid-cols-2 gap-4 px-4">
+                        { categories[currentTab] != "people" ?
+                        results[categories[currentTab]].items.map((result, index) => (
+                            <MovieResult key={index} title={(result as MovieItem).title} description={(result as MovieItem).description} imageUrl={(result as MovieItem).imageUrl} />
+                        )) : results[categories[currentTab]].items.map((result, index) => (
+                            <PersonResult key={index} name={(result as PersonItem).name} knownForDepartment={(result as PersonItem).knownForDepartment} knownFor={(result as PersonItem).knownFor} imageUrl={(result as PersonItem).imageUrl}></PersonResult>
+                        ))}
+                    </div>
                 </div>
             </div>
         </Content>

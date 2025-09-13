@@ -22,6 +22,7 @@ export default class APICaller {
     private static imageBaseUrl: string
     private static backdropSizes: string[]
     private static posterSizes: string[]
+    private static profileSizes: string[]
 
     private constructor() {
         APICaller.apiKey = import.meta.env.VITE_TMDB_KEY
@@ -52,6 +53,7 @@ export default class APICaller {
             APICaller.imageBaseUrl = json.images.secure_base_url
             APICaller.backdropSizes = json.images.backdrop_sizes
             APICaller.posterSizes = json.images.poster_sizes
+            APICaller.profileSizes = json.images.profile_sizes
         })
         .catch((error:any) => console.error(error.message))
     }
@@ -85,8 +87,9 @@ export default class APICaller {
                     json.results[i].poster = APICaller.imageBaseUrl + APICaller.posterSizes[0] + json.results[i].poster_path
                 } else if (json.results[i].backdrop_path) {
                     json.results[i].backdrop = APICaller.imageBaseUrl + APICaller.backdropSizes[0] + json.results[i].backdrop_path
+                } else if (json.results[i].profile_path) {
+                    json.results[i].profile = APICaller.imageBaseUrl + APICaller.profileSizes[1] + json.results[i].profile_path
                 }
-                console.log(json.results[i])
             }
             return json
         })

@@ -6,7 +6,6 @@ const navigate = useNavigate()
 
     const onSubmit = (e: any) => {
         e.preventDefault()
-        console.log()
         navigate("/search?query=" + e.target.firstChild.value)
     }
 
