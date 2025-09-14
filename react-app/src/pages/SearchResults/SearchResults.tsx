@@ -137,13 +137,13 @@ export default function SearchResults() {
 
     return (
         <Content crumbs={crumbs}>
-            <div className="search-results flex flex-col gap-6">
+            <div className="search-results flex flex-col gap-2 md:gap-6">
                 <h1 className="search-title">{title}</h1>
-                <div className="results-display flex flex-col gap-8">
+                <div className="results-display flex flex-col gap-4 md:gap-8">
                     <ul className="flex inset-shadow-[0_-0.25px_gray]">
-                        {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
+                        {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b truncate " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
                     </ul>
-                    <div className="results-list grid grid-cols-2 gap-4 px-4">
+                    <div className="results-list grid grid-cols-[repeat(auto-fit,minmax(min(100%,400px),1fr))] gap-4 px-2 md:px-4">
                         { categories[currentTab] != "people" ?
                         results[categories[currentTab]].items.map((result, index) => (
                             <MovieResult key={index} title={(result as MovieItem).title} description={(result as MovieItem).description} imageUrl={(result as MovieItem).imageUrl} />

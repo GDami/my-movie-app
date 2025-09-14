@@ -2,6 +2,7 @@
 
 :root {
     font-family: "Nunito Sans", sans-serif;
+    color: var(--color-darkblue);
 }
 
 .chewy {
@@ -16,4 +17,10 @@ body {
 h1 {
     font-family: "Chewy", system-ui;
     font-size: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+    :root {
+        font-size: 14px;
+    }
 }
