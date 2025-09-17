@@ -1,4 +1,4 @@
-import { useLocation, useSearchParams } from "react-router";
+import { Link, redirect, useLocation, useSearchParams } from "react-router";
 import Content from "../layout/Content/Content";
 import MovieResult from "./MovieResult";
 import APICaller, { type Category } from "../../singletons/APICaller";
@@ -91,13 +91,13 @@ export default function SearchResults() {
     const [ currentTab, setCurrentTab ] = useState(0)
     
     const [ searchParams ] = useSearchParams()
+    const query = searchParams.get("query") || ""
+    console.log(query)
     const location = useLocation()
 
     const onClickCategory = (index:number) => {
         setCurrentTab(index)
     }
-
-    const query = searchParams.get("query")
 
     const title = `Search results for "${query}"`
     const link = `${location.pathname}?query=${query}`
@@ -141,14 +141,14 @@ export default function SearchResults() {
                 <h1 className="search-title">{title}</h1>
                 <div className="results-display flex flex-col gap-4 md:gap-8">
                     <ul className="flex inset-shadow-[0_-0.25px_gray]">
-                        {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-colors border-b truncate " + (index == currentTab ? "border-b-black" : "border-b-transparent text-gray-600 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
+                        {categories.map((category, index) => <li key={index} className={"px-2 cursor-pointer transition-[color,border-color] border-b truncate " + (index == currentTab ? "border-b-black" : "border-b-transparent text-darkblue/60 hover:text-black")} onClick={() => onClickCategory(index)}>{`${category} (${results[category].nb}${results[category].nb == 10000 ? "+" : ""})`}</li>)}
                     </ul>
                     <div className="results-list grid grid-cols-[repeat(auto-fit,minmax(min(100%,400px),1fr))] gap-4 px-2 md:px-4">
                         { categories[currentTab] != "people" ?
                         results[categories[currentTab]].items.map((result, index) => (
-                            <MovieResult key={index} title={(result as MovieItem).title} description={(result as MovieItem).description} imageUrl={(result as MovieItem).imageUrl} />
+                            <Link key={index} to={`/${categories[currentTab]}/${result.id}-${result.title}`}><MovieResult title={(result as MovieItem).title} description={(result as MovieItem).description} imageUrl={(result as MovieItem).imageUrl} /></Link>
                         )) : results[categories[currentTab]].items.map((result, index) => (
-                            <PersonResult key={index} name={(result as PersonItem).name} knownForDepartment={(result as PersonItem).knownForDepartment} knownFor={(result as PersonItem).knownFor} imageUrl={(result as PersonItem).imageUrl}></PersonResult>
+                            <Link key={index} to={`/${categories[currentTab]}/${result.id}`}><PersonResult name={(result as PersonItem).name} knownForDepartment={(result as PersonItem).knownForDepartment} knownFor={(result as PersonItem).knownFor} imageUrl={(result as PersonItem).imageUrl}></PersonResult></Link>
                         ))}
                     </div>
                 </div>

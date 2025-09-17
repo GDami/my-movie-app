@@ -13,7 +13,7 @@ export default function PersonResult(props: PersonResultProps) {
             <img className="shrink-0 rounded-l-20 w-23 h-full object-cover flex justify-center items-center" src={props.imageUrl ? props.imageUrl : noImg} alt={"no img"}></img>
             <div className="flex flex-col justify-center p-3 gap-1 w-[calc(100%-92px)]">
                 <div className="truncate"><span className="font-bold">{props.name}</span> - <span>{props.knownForDepartment}</span></div>
-                <p className="relative text-gray-600 truncate w-[calc(100%)]">{props.knownFor.join(", ")}</p>
+                <p className="relative text-darkblue/60 truncate w-[calc(100%)]">{props.knownFor.join(", ")}</p>
             </div>
         </div>
     )

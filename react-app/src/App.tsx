@@ -4,6 +4,7 @@ import SearchResults from './pages/SearchResults/SearchResults'
 import Home from './pages/Home/Home'
 import { useEffect } from 'react'
 import APICaller from './singletons/APICaller'
+import MovieDetails from './pages/Movie/MovieDetails'
 
 
 function App() {
@@ -13,8 +14,9 @@ function App() {
     	<div className='app bg-darkblue'>
 		    <Routes>
         		<Route path="/search" element={<SearchResults />} />
+        		<Route path="/movies/:movieId" element={<MovieDetails />} />
           		<Route path="/" element={<Home />} />
-		    	</Routes>
+            </Routes>
     	</div>
 	)
 }

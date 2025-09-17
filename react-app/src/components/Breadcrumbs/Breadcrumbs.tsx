@@ -13,7 +13,7 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
     
 
     return (
-        <div className="breadcrumbs w-fit text-sm text-gray-600 flex py-2 ">
+        <div className="breadcrumbs w-fit text-sm text-darkblue/60 flex py-2 ">
             <Link to="/" className="breadcrumb hover:underline">Home</Link>
             <span>&nbsp;&gt;&nbsp;</span>
             {props.crumbs.map((crumb, index) => (

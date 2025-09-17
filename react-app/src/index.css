@@ -9,11 +9,6 @@
 	font-family: "Chewy", system-ui;
 }
 
-body {
-	--color-accent: #F5C518;
-	--color-accent-25: color-mix(in srgb, var(--color-accent), transparent 70%)
-}
-
 h1 {
     font-family: "Chewy", system-ui;
     font-size: 1.5rem;
