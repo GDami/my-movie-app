@@ -4,7 +4,7 @@ import SearchBar from "../../components/SearchBar/SearchBar"
 
 export default function Home() {
     return (
-        <div className="home flex flex-col gap-10 items-center justify-center lg:justify-start lg:pt-20 min-h-screen max-w-[1280px] mx-auto p-4">
+        <div className="home flex flex-col gap-10 items-center justify-center lg:justify-start lg:pt-20 min-h-screen max-w-[600px] mx-auto p-4">
             <div className="relative w-[600px]">
                 <img className="" src={logo} alt="logo"></img>
                 <img className="absolute w-1/4 bottom-0 right-0" src={tmdbLogo} alt="tmdb-logo"></img>

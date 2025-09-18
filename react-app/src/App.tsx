@@ -11,7 +11,7 @@ function App() {
     useEffect(() => {APICaller.getInstance()})
 
 	return (
-    	<div className='app bg-darkblue'>
+    	<div className='app bg-darkblue leading-[1.4]'>
 		    <Routes>
         		<Route path="/search" element={<SearchResults />} />
         		<Route path="/movies/:movieId" element={<MovieDetails />} />

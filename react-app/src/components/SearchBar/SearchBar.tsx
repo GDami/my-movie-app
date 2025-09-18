@@ -10,7 +10,7 @@ const navigate = useNavigate()
     }
 
     return (
-        <form id="search-form" onSubmit={onSubmit} className="flex w-full max-w-[600px]">
+        <form id="search-form" onSubmit={onSubmit} className="flex w-full">
             <input
             name="query"
             className="searchbar bg-white px-4 h-10 rounded-l-xl w-full border-r-0 border-2 border-white border-r-mouvise focus:border-mouvise focus:outline-0 transition-colors"

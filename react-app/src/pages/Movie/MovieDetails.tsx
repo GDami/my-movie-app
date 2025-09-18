@@ -2,6 +2,8 @@ import { useLocation, useParams } from "react-router";
 import Content from "../layout/Content/Content";
 import APICaller from "../../singletons/APICaller";
 import { useEffect, useState } from "react";
+import imdbLogo from "/imdb-logo.svg"
+import tmdbLogo from "/tmdb-square.svg"
 
 import noImg from "/no-img.png"
 import type { BreadcrumbEntry } from "../../components/Breadcrumbs/Breadcrumbs";
@@ -56,10 +58,12 @@ export default function MovieDetails() {
         newDetails.posterUrl = apiCaller.getPosterSource(movieResponse.poster_path, "w300")
 
         const directorEntry = creditsResponse.crew.find((member:any) => member.job == "Director")
-        newDetails.director = {
-            name: directorEntry.name,
-            id: directorEntry.id,
-            imageUrl: directorEntry.profile_url
+        if (directorEntry) {
+            newDetails.director = {
+                name: directorEntry.name,
+                id: directorEntry.id,
+                imageUrl: directorEntry.profile_url
+            }
         }
 
         const writerEntries = creditsResponse.crew.filter((member:any) => member.job == "Screenplay")
@@ -91,6 +95,7 @@ export default function MovieDetails() {
 
     const hours = Math.trunc(details.duration / 60)
     const minutes = details.duration % 60
+    const rating = Number(details.rating).toFixed(1)
 
     const location = useLocation()
 
@@ -104,38 +109,60 @@ export default function MovieDetails() {
             <div className="movie-details flex flex-col gap-2 md:gap-6">
                 <div className="flex gap-8 md:gap-14">
                     <div className="shrink-0 poster-container">
-                        <img className=" w-75 aspect-2/3 object-cover" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
+                        <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                     </div>
                     <div className="flex flex-col gap-7">
                         <div className="flex flex-col gap-1">
-                            <p className="chewy text-2xl">
+                            <span className="chewy text-3xl flex items-center gap-2">
+                                <i className='bx text-5xl rounded-sm bx-film'  ></i> 
                                 <span className="font-bold">{`${details.title} `}</span>
                                 <span className="text-gray-400">{details.date &&`(${details.date.substring(0,4)})`}</span>
-                            </p>
-                            <p className="text-gray-600 text-sm">
+                            </span>
+                            <span className="text-gray-600">
                                 {hours ? <span>{`${hours}h `}</span> : ""}
                                 {minutes ? <span>{`${minutes}min`}</span> : ""}
                                 &nbsp;-&nbsp;
                                 <span>{details.genres.join(" / ")}</span>
-                            </p>
+                            </span>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <span className="text-xl font-bold">Overview</span>
-                            <span>{details.overview}</span>
+                            <div className="w-fit flex items-center border-b-1 px-1">
+                                <i className='bxr bxs-eye'  ></i> 
+                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Overview</span>
+                            </div>
+                            <p>{details.overview}</p>
                         </div>
                         <div className="flex flex-col gap-1">
-                            { details.director ? <p className="flex gap-2">
+                            <div className="w-fit flex items-center border-b-1 px-1">
+                                <i className='bx  bxs-community'  ></i>
+                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Crew</span>
+                            </div>
+                            { details.director ? <span className="flex gap-2">
                                 <span className="font-bold">Directed by</span>
-                                <span>{details.director.name}</span>
-                            </p> : "" }
-                            { details.writers.length ? <p className="flex gap-2">
+                                <p>{details.director.name}</p>
+                            </span> : "" }
+                            { details.writers.length ? <span className="flex gap-2">
                                 <span className="font-bold">Written by</span>
-                                <span>{details.writers.map((person) => person.name).join(" - ")}</span>
-                            </p> : "" }
-                            { details.actors.length ? <p className="flex gap-2">
+                                <p>{details.writers.map((person) => person.name).join(" - ")}</p>
+                            </span> : "" }
+                            { details.actors.length ? <span className="flex gap-2">
                                 <span className="font-bold">Starring</span>
-                                <span>{details.actors.slice(0, Math.min(4, details.actors.length)).map((person) => person.name).join(" - ")}</span>
-                            </p> : "" }
+                                <p>{details.actors.slice(0, Math.min(4, details.actors.length)).map((person) => person.name).join(" - ")}</p>
+                            </span> : "" }
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <div className="w-fit flex items-center border-b-1 px-1">
+                                <i className='bxr bxs-star'  ></i>
+                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Rating</span>
+                            </div>
+                            <div className="h-8 flex items-center gap-2">
+                                <img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img>
+                                <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
+                            </div>
+                            <div className="h-8 flex items-center gap-2">
+                                <img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img>
+                                <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
+                            </div>
                         </div>
                     </div>
                 </div>
