@@ -14,6 +14,8 @@ const searchEndpoints = {
 
 const configEndpoint = "configuration"
 
+const imdbUrl = "https://api.imdbapi.dev/titles/"
+
 export type Category = keyof typeof searchEndpoints 
 
 const authToken = "Bearer "
@@ -125,6 +127,28 @@ export default class APICaller {
 
             return result
         })
+        .then (async (json) => {
+            if (!json.imdb_id) {
+                json.imdbRating = undefined
+                return json
+            }
+            const imdbEndpoint = imdbUrl + json.imdb_id
+            const imdbRating = await fetch(imdbEndpoint)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(`Response error : ${response.status}`)
+                }
+
+                const result = await response.json()
+
+                return result.rating.aggregateRating
+
+            })
+
+            json.imdbRating = imdbRating
+
+            return json
+        })
         .catch((error:any) => console.error(error.message))
 
         const creditsPromise = fetch(creditsRequest)
@@ -139,15 +163,15 @@ export default class APICaller {
         })
         .then(async (json) => {
             for (const actor of json.cast) {
-                if (actor.hasOwnProperty("profile_path")) {
-                    actor.profile_url = APICaller.imageBaseUrl + APICaller.profileSizes[1] + actor.profile_url
+                if (actor.hasOwnProperty("profile_path") && actor.profile_path) {
+                    actor.profile_url = APICaller.imageBaseUrl + APICaller.profileSizes[1] + actor.profile_path
                 } else {
                     actor.profil_url = ""
                 }
             }
             for (const member of json.crew) {
-                if (member.hasOwnProperty("profile_path")) {
-                    member.profile_url = APICaller.imageBaseUrl + APICaller.profileSizes[1] + member.profile_url
+                if (member.hasOwnProperty("profile_path") && member.profile_path) {
+                    member.profile_url = APICaller.imageBaseUrl + APICaller.profileSizes[1] + member.profile_path
                 } else {
                     member.profil_url = ""
                 }

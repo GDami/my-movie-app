@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 import Content from "../layout/Content/Content";
 import APICaller from "../../singletons/APICaller";
 import { useEffect, useState } from "react";
@@ -21,6 +21,9 @@ type MovieDetails = {
     genres: string[],
     overview: string,
     rating: number,
+    imdbRating: number,
+    id: number,
+    imdbId: number,
     posterUrl: string,
     director: Person | undefined,
     writers: Person[],
@@ -28,7 +31,8 @@ type MovieDetails = {
 }
 
 const emptyMovie: MovieDetails = {
-    title: "", date: "", duration: 0, genres: [], overview: "Overview", rating: 5.0, posterUrl: "",
+    title: "", date: "", duration: 0, genres: [], overview: "Overview", rating: 0, imdbRating
+    : 0, id: 0, imdbId: 0, posterUrl: "",
     director: undefined, writers: [], actors: []
 }
 
@@ -49,12 +53,17 @@ export default function MovieDetails() {
 
         const newDetails: MovieDetails = structuredClone(emptyMovie)
 
+        console.log(movieResponse)
+
         newDetails.title = movieResponse.title
         newDetails.date = movieResponse.release_date
         newDetails.duration = movieResponse.runtime
         newDetails.genres = movieResponse.genres.map((genre: { id:number, name: string}) => genre.name)
         newDetails.overview = movieResponse.overview
         newDetails.rating = movieResponse.vote_average
+        newDetails.imdbRating = movieResponse.imdbRating
+        newDetails.id = movieResponse.id
+        newDetails.imdbId = movieResponse.imdb_id
         newDetails.posterUrl = apiCaller.getPosterSource(movieResponse.poster_path, "w300")
 
         const directorEntry = creditsResponse.crew.find((member:any) => member.job == "Director")
@@ -91,11 +100,13 @@ export default function MovieDetails() {
 
     useEffect(() => {
         fetchDetails()
-    }, [])
+    }, [ params ])
 
     const hours = Math.trunc(details.duration / 60)
     const minutes = details.duration % 60
+
     const rating = Number(details.rating).toFixed(1)
+    const imdbRating = details.imdbRating ? Number(details.imdbRating).toFixed(1) : " - "
 
     const location = useLocation()
 
@@ -106,12 +117,9 @@ export default function MovieDetails() {
 
     return (
         <Content crumbs={crumbs}>
-            <div className="movie-details flex flex-col gap-2 md:gap-6">
-                <div className="flex gap-8 md:gap-14">
-                    <div className="shrink-0 poster-container">
-                        <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
-                    </div>
-                    <div className="flex flex-col gap-7">
+            <div className="movie-details flex flex-col gap-7">
+                <div className="flex gap-4 md:gap-8">
+                    <div className="flex flex-col gap-7 grow-1">
                         <div className="flex flex-col gap-1">
                             <span className="chewy text-3xl flex items-center gap-2">
                                 <i className='bx text-5xl rounded-sm bx-film'  ></i> 
@@ -130,7 +138,7 @@ export default function MovieDetails() {
                                 <i className='bxr bxs-eye'  ></i> 
                                 <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Overview</span>
                             </div>
-                            <p>{details.overview}</p>
+                            <p className="text-justify">{details.overview}</p>
                         </div>
                         <div className="flex flex-col gap-1">
                             <div className="w-fit flex items-center border-b-1 px-1">
@@ -143,26 +151,45 @@ export default function MovieDetails() {
                             </span> : "" }
                             { details.writers.length ? <span className="flex gap-2">
                                 <span className="font-bold">Written by</span>
-                                <p>{details.writers.map((person) => person.name).join(" - ")}</p>
+                                <p>{details.writers.map((person) => person.name).join(" · ")}</p>
                             </span> : "" }
                             { details.actors.length ? <span className="flex gap-2">
                                 <span className="font-bold">Starring</span>
-                                <p>{details.actors.slice(0, Math.min(4, details.actors.length)).map((person) => person.name).join(" - ")}</p>
+                                <p>{details.actors.slice(0, Math.min(4, details.actors.length)).map((person) => person.name).join(" · ")}</p>
                             </span> : "" }
                         </div>
                         <div className="flex flex-col gap-2">
                             <div className="w-fit flex items-center border-b-1 px-1">
                                 <i className='bxr bxs-star'  ></i>
-                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Rating</span>
+                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Ratings</span>
                             </div>
                             <div className="h-8 flex items-center gap-2">
-                                <img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img>
-                                <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
+                                <p><span className="font-bold text-darkblue">{imdbRating}</span><span className=""> / 10</span></p>
+                                <a target="_blank" className="h-full" href={`https://www.imdb.com/title/${details.imdbId}`}><img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img></a>
                             </div>
                             <div className="h-8 flex items-center gap-2">
-                                <img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img>
                                 <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
+                                <a target="_blank" className="h-full" href={`https://www.themoviedb.org/movie/${details.id}`}><img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img></a>
                             </div>
+                        </div>
+                    </div>
+                    <div className="shrink-0 poster-container">
+                        <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                    <div className="w-fit flex items-center border-b-1 px-1">
+                        <i className='bx  bxs-community'  ></i>
+                        <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Actors</span>
+                    </div>
+                    <div className="overflow-x-scroll scrollbar-hidden">
+                        <div className="flex p-2 w-fit">
+                            {details.actors.map((actor, index) => (
+                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 p-2 border border-transparent rounded hover:border-darkblue transition-colors">
+                                    <img className="rounded-sm w-40 aspect-2/3 object-cover" src={actor.imageUrl ? actor.imageUrl : noImg} alt={`${actor.name} img`}></img>
+                                    <span className="text-center">{actor.name}</span>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -18,6 +18,10 @@ p {
     color: var(--color-gray-700)
 }
 
+.scrollbar-hidden {
+    scrollbar-width: none;
+}
+
 @media screen and (max-width: 768px) {
     :root {
         font-size: 14px;
