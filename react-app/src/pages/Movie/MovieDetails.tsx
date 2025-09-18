@@ -118,10 +118,10 @@ export default function MovieDetails() {
     return (
         <Content crumbs={crumbs}>
             <div className="movie-details flex flex-col gap-7">
-                <div className="flex gap-4 md:gap-8">
+                <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-7 grow-1">
-                        <div className="flex flex-col gap-1">
-                            <span className="chewy text-3xl flex items-center gap-2">
+                        <div className="flex flex-col gap-1 text-center md:text-start">
+                            <span className="chewy text-3xl flex justify-center md:justify-start items-center gap-2">
                                 <i className='bx text-5xl rounded-sm bx-film'  ></i> 
                                 <span className="font-bold">{`${details.title} `}</span>
                                 <span className="text-gray-400">{details.date &&`(${details.date.substring(0,4)})`}</span>
@@ -132,6 +132,9 @@ export default function MovieDetails() {
                                 &nbsp;-&nbsp;
                                 <span>{details.genres.join(" / ")}</span>
                             </span>
+                        </div>
+                        <div className="md:hidden shrink-0 poster-container">
+                            <img className="mx-auto w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                         </div>
                         <div className="flex flex-col gap-1">
                             <div className="w-fit flex items-center border-b-1 px-1">
@@ -163,17 +166,17 @@ export default function MovieDetails() {
                                 <i className='bxr bxs-star'  ></i>
                                 <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Ratings</span>
                             </div>
-                            <div className="h-8 flex items-center gap-2">
+                            {details.imdbId && <div className="h-8 flex items-center gap-2">
                                 <p><span className="font-bold text-darkblue">{imdbRating}</span><span className=""> / 10</span></p>
                                 <a target="_blank" className="h-full" href={`https://www.imdb.com/title/${details.imdbId}`}><img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img></a>
-                            </div>
+                            </div>}
                             <div className="h-8 flex items-center gap-2">
                                 <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
                                 <a target="_blank" className="h-full" href={`https://www.themoviedb.org/movie/${details.id}`}><img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img></a>
                             </div>
                         </div>
                     </div>
-                    <div className="shrink-0 poster-container">
+                    <div className="hidden md:block shrink-0 poster-container">
                         <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                     </div>
                 </div>
@@ -183,9 +186,9 @@ export default function MovieDetails() {
                         <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Actors</span>
                     </div>
                     <div className="overflow-x-scroll scrollbar-hidden">
-                        <div className="flex p-2 w-fit">
+                        <div className="flex py-2 w-fit">
                             {details.actors.map((actor, index) => (
-                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 p-2 border border-transparent rounded hover:border-darkblue transition-colors">
+                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 p-2 border-2 border-transparent rounded hover:border-darkblue/80 transition-colors">
                                     <img className="rounded-sm w-40 aspect-2/3 object-cover" src={actor.imageUrl ? actor.imageUrl : noImg} alt={`${actor.name} img`}></img>
                                     <span className="text-center">{actor.name}</span>
                                 </Link>
