@@ -141,7 +141,7 @@ export default class APICaller {
 
                 const result = await response.json()
 
-                return result.rating.aggregateRating
+                return result.rating?.aggregateRating
 
             })
 

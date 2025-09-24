@@ -64,7 +64,7 @@ export default function MovieDetails() {
         newDetails.imdbRating = movieResponse.imdbRating
         newDetails.id = movieResponse.id
         newDetails.imdbId = movieResponse.imdb_id
-        newDetails.posterUrl = apiCaller.getPosterSource(movieResponse.poster_path, "w300")
+        newDetails.posterUrl = movieResponse.poster_path ? apiCaller.getPosterSource(movieResponse.poster_path, "w300") : ""
 
         const directorEntry = creditsResponse.crew.find((member:any) => member.job == "Director")
         if (directorEntry) {
@@ -118,7 +118,7 @@ export default function MovieDetails() {
     return (
         <Content crumbs={crumbs}>
             <div className="movie-details flex flex-col gap-7">
-                <div className="flex flex-col-reverse md:flex-row gap-4 md:gap-8">
+                <div className="flex flex-col-reverse md:flex-row-reverse gap-4 md:gap-8">
                     <div className="flex flex-col gap-7 grow-1">
                         <div className="flex flex-col gap-1 text-center md:text-start">
                             <span className="chewy text-3xl flex justify-center md:justify-start items-center gap-2">
@@ -166,12 +166,20 @@ export default function MovieDetails() {
                                 <i className='bxr bxs-star'  ></i>
                                 <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Ratings</span>
                             </div>
-                            {details.imdbId && <div className="h-8 flex items-center gap-2">
-                                <p><span className="font-bold text-darkblue">{imdbRating}</span><span className=""> / 10</span></p>
+                            {details.imdbId && details.imdbRating && <div className="h-8 flex items-center gap-2">
+                                <p>
+                                    <span className="font-bold text-darkblue">{imdbRating}</span>
+                                    <span className=""> / 10</span>
+                                </p>
+                                <span className="px-1">·</span>
                                 <a target="_blank" className="h-full" href={`https://www.imdb.com/title/${details.imdbId}`}><img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img></a>
                             </div>}
                             <div className="h-8 flex items-center gap-2">
-                                <p><span className="font-bold text-darkblue">{rating}</span><span className=""> / 10</span></p>
+                                <p>
+                                    <span className="font-bold text-darkblue">{rating}</span>
+                                    <span className=""> / 10</span>
+                                </p>
+                                <span className="px-1">·</span>
                                 <a target="_blank" className="h-full" href={`https://www.themoviedb.org/movie/${details.id}`}><img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img></a>
                             </div>
                         </div>
@@ -180,21 +188,22 @@ export default function MovieDetails() {
                         <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                     </div>
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 relative">
                     <div className="w-fit flex items-center border-b-1 px-1">
                         <i className='bx  bxs-community'  ></i>
                         <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Actors</span>
                     </div>
                     <div className="overflow-x-scroll scrollbar-hidden">
-                        <div className="flex py-2 w-fit">
-                            {details.actors.map((actor, index) => (
-                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 p-2 border-2 border-transparent rounded hover:border-darkblue/80 transition-colors">
-                                    <img className="rounded-sm w-40 aspect-2/3 object-cover" src={actor.imageUrl ? actor.imageUrl : noImg} alt={`${actor.name} img`}></img>
-                                    <span className="text-center">{actor.name}</span>
+                        <div className="flex py-2 w-fit gap-4">
+                            {details.actors.slice(0, Math.min(10, details.actors.length)).map((actor, index) => (
+                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 pb-2 rounded-md bg-darkblue/8 hover:bg-mouvise hover:border-mouvise transition-colors">
+                                    <img className="rounded-t w-40 aspect-2/3 object-cover" src={actor.imageUrl ? actor.imageUrl : noImg} alt={`${actor.name} img`}></img>
+                                    <span className="flex-1 flex justify-center items-center text-center px-1">{actor.name}</span>
                                 </Link>
                             ))}
                         </div>
                     </div>
+                    <div className="absolute top-0 right-0"></div>
                 </div>
             </div>
         </Content>
