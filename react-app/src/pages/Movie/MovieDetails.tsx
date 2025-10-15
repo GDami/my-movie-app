@@ -2,13 +2,15 @@ import { Link, useLocation, useParams } from "react-router";
 import Content from "../layout/Content/Content";
 import APICaller from "../../singletons/APICaller";
 import { useEffect, useState } from "react";
-import imdbLogo from "/imdb-logo.svg"
-import tmdbLogo from "/tmdb-square.svg"
 
 import noImg from "/no-img.png"
 import type { BreadcrumbEntry } from "../../components/Breadcrumbs/Breadcrumbs";
+import ActorCaroussel from "../../components/ActorCaroussel/ActorCaroussel";
+import Overview from "./Overview";
+import Crew from "./Crew";
+import Ratings from "./Ratings";
 
-type Person = {
+export type Person = {
     name: string,
     id: number,
     imageUrl: string
@@ -105,9 +107,6 @@ export default function MovieDetails() {
     const hours = Math.trunc(details.duration / 60)
     const minutes = details.duration % 60
 
-    const rating = Number(details.rating).toFixed(1)
-    const imdbRating = details.imdbRating ? Number(details.imdbRating).toFixed(1) : " - "
-
     const location = useLocation()
 
     const crumbs: BreadcrumbEntry[] = [
@@ -119,7 +118,7 @@ export default function MovieDetails() {
         <Content crumbs={crumbs}>
             <div className="movie-details flex flex-col gap-7">
                 <div className="flex flex-col-reverse md:flex-row-reverse gap-4 md:gap-8">
-                    <div className="flex flex-col gap-7 grow-1">
+                    <div className="flex flex-col gap-7 grow-1 shadow-lg-centered px-4 py-2">
                         <div className="flex flex-col gap-1 text-center md:text-start">
                             <span className="chewy text-3xl flex justify-center md:justify-start items-center gap-2">
                                 <i className='bx text-5xl rounded-sm bx-film'  ></i> 
@@ -137,74 +136,20 @@ export default function MovieDetails() {
                             <img className="mx-auto w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="w-fit flex items-center border-b-1 px-1">
-                                <i className='bxr bxs-eye'  ></i> 
-                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Overview</span>
-                            </div>
-                            <p className="text-justify">{details.overview}</p>
+                            <Overview overview={details.overview} />
                         </div>
                         <div className="flex flex-col gap-1">
-                            <div className="w-fit flex items-center border-b-1 px-1">
-                                <i className='bx  bxs-community'  ></i>
-                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Crew</span>
-                            </div>
-                            { details.director ? <span className="flex gap-2">
-                                <span className="font-bold">Directed by</span>
-                                <p>{details.director.name}</p>
-                            </span> : "" }
-                            { details.writers.length ? <span className="flex gap-2">
-                                <span className="font-bold">Written by</span>
-                                <p>{details.writers.map((person) => person.name).join(" · ")}</p>
-                            </span> : "" }
-                            { details.actors.length ? <span className="flex gap-2">
-                                <span className="font-bold">Starring</span>
-                                <p>{details.actors.slice(0, Math.min(4, details.actors.length)).map((person) => person.name).join(" · ")}</p>
-                            </span> : "" }
+                            <Crew director={details.director} writers={details.writers} actors={details.actors} />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <div className="w-fit flex items-center border-b-1 px-1">
-                                <i className='bxr bxs-star'  ></i>
-                                <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Ratings</span>
-                            </div>
-                            {details.imdbId && details.imdbRating && <div className="h-8 flex items-center gap-2">
-                                <p>
-                                    <span className="font-bold text-darkblue">{imdbRating}</span>
-                                    <span className=""> / 10</span>
-                                </p>
-                                <span className="px-1">·</span>
-                                <a target="_blank" className="h-full" href={`https://www.imdb.com/title/${details.imdbId}`}><img className="h-full rounded-sm bg-[#f5c518]" src={imdbLogo} alt="imdb logo"></img></a>
-                            </div>}
-                            <div className="h-8 flex items-center gap-2">
-                                <p>
-                                    <span className="font-bold text-darkblue">{rating}</span>
-                                    <span className=""> / 10</span>
-                                </p>
-                                <span className="px-1">·</span>
-                                <a target="_blank" className="h-full" href={`https://www.themoviedb.org/movie/${details.id}`}><img className="h-full rounded-sm " src={tmdbLogo} alt="imdb logo"></img></a>
-                            </div>
+                            <Ratings imdbId={details.imdbId} imdbRating={details.imdbRating} rating={details.rating} id={details.id} />
                         </div>
                     </div>
                     <div className="hidden md:block shrink-0 poster-container">
                         <img className=" w-75 aspect-2/3 object-cover rounded-sm" src={details.posterUrl ? details.posterUrl : noImg} alt="no-img"></img>
                     </div>
                 </div>
-                <div className="flex flex-col gap-1 relative">
-                    <div className="w-fit flex items-center border-b-1 px-1">
-                        <i className='bx  bxs-community'  ></i>
-                        <span className="text-lg text-darkblue font-bold px-2 leading-[1.2]">Actors</span>
-                    </div>
-                    <div className="overflow-x-scroll scrollbar-hidden">
-                        <div className="flex py-2 w-fit gap-4">
-                            {details.actors.slice(0, Math.min(10, details.actors.length)).map((actor, index) => (
-                                <Link to={"/"} key={index} className="flex flex-col w-40 gap-1 pb-2 rounded-md bg-darkblue/8 hover:bg-mouvise hover:border-mouvise transition-colors">
-                                    <img className="rounded-t w-40 aspect-2/3 object-cover" src={actor.imageUrl ? actor.imageUrl : noImg} alt={`${actor.name} img`}></img>
-                                    <span className="flex-1 flex justify-center items-center text-center px-1">{actor.name}</span>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="absolute top-0 right-0"></div>
-                </div>
+                <ActorCaroussel actorsDetails={details.actors} />
             </div>
         </Content>
     )
